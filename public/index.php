@@ -348,7 +348,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="card car-card">
                     <div class="position-relative">
-                        <img src="<?php echo $car['image_path'] ?: 'images/default-car.jpg'; ?>" class="car-card-img" alt="<?php echo $car['brand'] . ' ' . $car['model']; ?>">
+                        <img src="<?php echo $car['image_path'] ? '../' . $car['image_path'] : 'images/default-car.jpg'; ?>" class="car-card-img" alt="<?php echo $car['brand'] . ' ' . $car['model']; ?>">
                         <div class="position-absolute top-0 end-0 m-3">
                             <span class="badge bg-success">Available</span>
                         </div>

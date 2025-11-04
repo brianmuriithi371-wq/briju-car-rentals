@@ -15,18 +15,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
     $pickup_location = $_POST['pickup_location'];
-    
+    $service_type = $_POST['service_type'] ?? 'self-drive';
+
     $days = (strtotime($end_date) - strtotime($start_date)) / (60 * 60 * 24);
     $total_amount = $days * $car['price_per_day'];
-    
+
     try {
-        $stmt = $pdo->prepare("INSERT INTO bookings (client_id, car_id, start_date, end_date, total_amount, pickup_location) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$_SESSION['user_id'], $car_id, $start_date, $end_date, $total_amount, $pickup_location]);
-        
+        $stmt = $pdo->prepare("INSERT INTO bookings (client_id, car_id, start_date, end_date, total_amount, service_type, pickup_location) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['user_id'], $car_id, $start_date, $end_date, $total_amount, $service_type, $pickup_location]);
+
         // Mark car as unavailable
         $stmt = $pdo->prepare("UPDATE cars SET is_available = 0 WHERE id = ?");
         $stmt->execute([$car_id]);
-        
+
         $_SESSION['success'] = "Car booked successfully!";
         header("Location: dashboard.php");
         exit();
@@ -99,6 +100,30 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </label>
                                 <input type="date" name="end_date" id="end_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
                                 <div class="invalid-feedback">Please select an end date.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-concierge-bell text-primary me-1"></i>Service Type
+                            </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="self_drive" value="self-drive" checked>
+                                        <label class="form-check-label" for="self_drive">
+                                            <i class="fas fa-steering-wheel me-1"></i>Self-Drive
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="chauffeur" value="chauffeur">
+                                        <label class="form-check-label" for="chauffeur">
+                                            <i class="fas fa-user-tie me-1"></i>Chauffeur Service
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

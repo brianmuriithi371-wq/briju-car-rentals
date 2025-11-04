@@ -86,6 +86,7 @@ if($user_type == 'client') {
                             <tr>
                                 <th><i class="fas fa-car me-1"></i>Car</th>
                                 <th><i class="fas fa-calendar me-1"></i>Dates</th>
+                                <th><i class="fas fa-concierge-bell me-1"></i>Service</th>
                                 <th><i class="fas fa-dollar-sign me-1"></i>Total Amount</th>
                                 <th><i class="fas fa-info-circle me-1"></i>Status</th>
                             </tr>
@@ -93,7 +94,7 @@ if($user_type == 'client') {
                         <tbody>
                             <?php if(empty($bookings)): ?>
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
+                                <td colspan="5" class="text-center text-muted py-4">
                                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
                                     No bookings found. <a href="index.php">Browse cars</a> to make your first booking!
                                 </td>
@@ -103,8 +104,9 @@ if($user_type == 'client') {
                                 <tr>
                                     <td><?php echo $booking['brand'] . ' ' . $booking['model']; ?></td>
                                     <td><?php echo $booking['start_date'] . ' to ' . $booking['end_date']; ?></td>
+                                    <td><span class="badge bg-info"><?php echo ucfirst($booking['service_type']); ?></span></td>
                                     <td>$<?php echo $booking['total_amount']; ?></td>
-                                    <td><span class="badge bg-<?php 
+                                    <td><span class="badge bg-<?php
                                         switch($booking['status']) {
                                             case 'confirmed': echo 'success'; break;
                                             case 'pending': echo 'warning'; break;

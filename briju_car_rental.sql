@@ -1,4 +1,4 @@
--- Active: 1753950191628@@127.0.0.1@3306@briju_car_rental
+-- Active: 1756719890619@@127.0.0.1@3306@briju_car_rental
 CREATE DATABASE briju_car_rental;
 USE briju_car_rental;
 
@@ -47,6 +47,7 @@ CREATE TABLE bookings (
     end_date DATE NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'confirmed', 'active', 'completed', 'cancelled') DEFAULT 'pending',
+    service_type ENUM('self-drive', 'chauffeur') DEFAULT 'self-drive',
     pickup_location VARCHAR(255),
     dropoff_location VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <p>&copy; 2024 Briju Car Rental. All rights reserved.</p>
-                    <p>Contact: info@briju.com | +1 234 567 890</p>
+                    <p>Contact: info@briju.com | +254 43941 112</p>
                 </div>
             </div>
         </div>
