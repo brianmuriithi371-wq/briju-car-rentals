@@ -4,6 +4,7 @@
     <!-- Additional CSS for index page -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+     <link rel="icon" type="image/png" sizes="96x96" href="../assets/imgs/icons8-car-96.png">
     <link rel="stylesheet" href="assets/css/index.css">
     <!-- Hero Section -->
     <section class="hero-section" id="home">

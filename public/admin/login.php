@@ -52,7 +52,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #061864ff 0%, #6826aaff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -70,7 +70,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .login-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+            background: linear-gradient(135deg, #1d1a19ff 0%, #4b1b0cff 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -103,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+            background: linear-gradient(135deg, #441504ff 0%, #74280fff 100%);
             border: none;
             border-radius: 8px;
             padding: 12px 24px;
@@ -182,13 +182,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <i class="fas fa-sign-in-alt me-2"></i>Login to Dashboard
                 </button>
             </form>
-
-            <div class="text-center mt-4">
-                <small class="text-muted">
-                    Default credentials: admin / password
-                </small>
-            </div>
-        </div>
     </div>
 
     <!-- Bootstrap JS -->
