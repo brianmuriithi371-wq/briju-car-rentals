@@ -83,18 +83,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </div>
-            
-            <!-- Demo Credentials Card -->
-            <div class="card mt-4 border-warning">
-                <div class="card-header bg-warning text-dark">
-                    <i class="fas fa-info-circle me-2"></i>Demo Credentials
-                </div>
-                <div class="card-body">
-                    <p class="mb-1"><strong>Client:</strong> client1 / password123</p>
-                    <p class="mb-1"><strong>Owner:</strong> owner1 / password123</p>
-                    <p class="mb-0"><strong>Admin:</strong> admin / password123</p>
-                </div>
-            </div>
         </div>
     </div>
 </div>

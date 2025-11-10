@@ -16,4 +16,30 @@ try {
 }
 
 session_start();
+
+// Admin authentication helper functions
+function isAdmin() {
+    return isset($_SESSION['user_id']) && isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin';
+}
+
+function requireAdmin() {
+    if (!isAdmin()) {
+        header("Location: ../admin/login.php");
+        exit();
+    }
+}
+
+function isLoggedIn() {
+    return isset($_SESSION['user_id']);
+}
+
+function getCurrentUser() {
+    if (isLoggedIn()) {
+        global $pdo;
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        return $stmt->fetch();
+    }
+    return null;
+}
 ?>

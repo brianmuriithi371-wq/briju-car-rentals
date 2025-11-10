@@ -1,35 +1,49 @@
 <?php include '../config/config.php'; ?>
 <?php include 'header.php'; ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>DriveShare - Find Your Perfect Ride</title>
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
+    <!-- Additional CSS for index page -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/imgs/icons8-car-96.png">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
     <link rel="stylesheet" href="assets/css/index.css">
-</head>
-<body>
     <!-- Hero Section -->
-    <section class="hero-section text-center fade-in">
+    <section class="hero-section" id="home">
         <div class="container">
-            <h1 class="display-4 fw-bold">Find Your Perfect Ride</h1>
-            <p class="lead">Quality cars from trusted owners across the city. Book in minutes, drive in style.</p>
-            <a href="#cars-section" class="btn hero-btn">Browse Cars <i class="fas fa-arrow-right ms-2"></i></a>
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="fade-in">Find Your Perfect Ride</h1>
+                    <p class="lead fade-in">Quality cars from trusted owners across the city. Book in minutes, drive in style.</p>
+                    <a href="#cars-section" class="btn hero-btn fade-in">Browse Cars <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <div class="col-lg-6">
+                    <!-- Quick Booking Form -->
+                    <div class="booking-form fade-in">
+                        <h3 class="mb-4">Book Your Car</h3>
+                        <form id="bookingForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Pick-up Location</label>
+                                    <input type="text" class="form-control" placeholder="Enter location">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Drop-off Location</label>
+                                    <input type="text" class="form-control" placeholder="Enter location">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Pick-up Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Drop-off Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn hero-btn w-100">Check Availability</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -180,8 +194,43 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+    // Animated counter for stats section
+    function animateCounter(elementId, finalValue, duration) {
+        let element = document.getElementById(elementId);
+        let startValue = 0;
+        let increment = finalValue / (duration / 16); // 60fps
+        let currentValue = startValue;
+
+        function updateCounter() {
+            currentValue += increment;
+            if (currentValue < finalValue) {
+                element.textContent = Math.floor(currentValue);
+                requestAnimationFrame(updateCounter);
+            } else {
+                element.textContent = finalValue;
+            }
+        }
+
+        updateCounter();
+    }
+
+    // Initialize counters when stats section is in view
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter('stat1', 500, 2000);
+                animateCounter('stat2', 150, 1500);
+                animateCounter('stat3', 25, 1500);
+                animateCounter('stat4', 98, 1000);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    observer.observe(document.querySelector('.stats-section'));
+
     function initMap() {
-        const map = L.map('map').setView([40.7128, -74.0060], 12); // Default to New York
+        const map = L.map('map').setView([-1.286389, 36.817223], 12); // Default to Nairobi, Kenya
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
@@ -200,7 +249,7 @@
         // Add car markers
         <?php
         $stmt = $pdo->query("SELECT * FROM cars WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND is_available = 1");
-        while($car = $stmt->fetch(PDO::_ASSOC)):
+        while($car = $stmt->fetch(PDO::FETCH_ASSOC)):
         ?>
         L.marker([<?php echo $car['latitude']; ?>, <?php echo $car['longitude']; ?>], {icon: carIcon})
             .addTo(map)
@@ -242,6 +291,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', initMap);
+
+    // Form submission handler
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Thank you! We will check availability and contact you shortly.');
+    });
     </script>
 
     <?php include 'footer.php'; ?>

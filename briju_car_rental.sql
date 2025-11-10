@@ -74,3 +74,7 @@ CREATE TABLE reviews (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
 );
+
+-- Insert default admin user
+INSERT INTO users (username, email, password, user_type, full_name, phone) VALUES
+('admin', 'admin@brijucar.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'System Administrator', '+1234567890');
