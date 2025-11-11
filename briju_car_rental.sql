@@ -13,6 +13,8 @@ CREATE TABLE users (
     phone VARCHAR(20),
     address TEXT,
     driver_license VARCHAR(50),
+    reset_token VARCHAR(64),
+    reset_expires DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

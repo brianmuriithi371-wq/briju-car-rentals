@@ -289,7 +289,7 @@ body {
                             <p class="mb-2">Don't have an account?
                                 <a href="register.php">Register here</a>
                             </p>
-                            <a href="#" class="text-muted small">Forgot your password?</a>
+                            <a href="forgot_password.php" class="text-muted small">Forgot your password?</a>
                         </div>
                     </div>
                 </div>
