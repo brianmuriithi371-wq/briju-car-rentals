@@ -6,22 +6,23 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'admin') {
     exit();
 }
 
-// Get payment/transaction data (simulated since we don't have a payments table yet)
+// Get payment/transaction data from payments table
 $payments = $pdo->query("
-    SELECT b.id as booking_id, b.total_amount, b.status, b.created_at,
+    SELECT p.*, b.id as booking_id, b.start_date, b.end_date,
            u.full_name as client_name, c.brand, c.model
-    FROM bookings b
+    FROM payments p
+    JOIN bookings b ON p.booking_id = b.id
     JOIN users u ON b.client_id = u.id
     JOIN cars c ON b.car_id = c.id
-    WHERE b.status IN ('confirmed', 'completed', 'active')
-    ORDER BY b.created_at DESC
+    ORDER BY p.created_at DESC
     LIMIT 50
 ")->fetchAll();
 
 // Calculate payment statistics
-$total_revenue = array_sum(array_column($payments, 'total_amount'));
+$total_revenue = array_sum(array_column($payments, 'amount'));
 $completed_payments = count(array_filter($payments, function($p) { return $p['status'] == 'completed'; }));
-$pending_payments = count(array_filter($payments, function($p) { return $p['status'] == 'confirmed' || $p['status'] == 'active'; }));
+$pending_payments = count(array_filter($payments, function($p) { return $p['status'] == 'pending'; }));
+$failed_payments = count(array_filter($payments, function($p) { return $p['status'] == 'failed'; }));
 
 include 'header.php';
 ?>
@@ -135,6 +136,7 @@ include 'header.php';
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Method</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -144,13 +146,16 @@ include 'header.php';
                                 <td>#<?php echo $payment['booking_id']; ?></td>
                                 <td><?php echo htmlspecialchars($payment['client_name']); ?></td>
                                 <td><?php echo htmlspecialchars($payment['brand'] . ' ' . $payment['model']); ?></td>
-                                <td><strong>$<?php echo number_format($payment['total_amount'], 2); ?></strong></td>
+                                <td><strong>$<?php echo number_format($payment['amount'], 2); ?></strong></td>
                                 <td>
                                     <span class="status-badge <?php echo $payment['status']; ?>">
                                         <?php echo ucfirst($payment['status']); ?>
                                     </span>
                                 </td>
                                 <td><?php echo date('M d, Y', strtotime($payment['created_at'])); ?></td>
+                                <td>
+                                    <span class="badge bg-secondary"><?php echo ucfirst($payment['payment_method']); ?></span>
+                                </td>
                                 <td>
                                     <button class="action-btn edit" onclick="viewPayment(<?php echo $payment['booking_id']; ?>)">
                                         <i class="fas fa-eye"></i>

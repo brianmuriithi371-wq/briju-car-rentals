@@ -10,8 +10,15 @@ $user_id = $_SESSION['user_id'];
 $user_type = $_SESSION['user_type'];
 
 if($user_type == 'client') {
-    // Client dashboard - show bookings
-    $stmt = $pdo->prepare("SELECT b.*, c.brand, c.model, c.license_plate FROM bookings b JOIN cars c ON b.car_id = c.id WHERE b.client_id = ? ORDER BY b.created_at DESC");
+    // Client dashboard - show bookings with payment info
+    $stmt = $pdo->prepare("
+        SELECT b.*, c.brand, c.model, c.license_plate, p.status as payment_status, p.payment_method, p.amount as payment_amount
+        FROM bookings b
+        JOIN cars c ON b.car_id = c.id
+        LEFT JOIN payments p ON b.id = p.booking_id
+        WHERE b.client_id = ?
+        ORDER BY b.created_at DESC
+    ");
     $stmt->execute([$user_id]);
     $bookings = $stmt->fetchAll();
 } elseif($user_type == 'owner') {
@@ -266,6 +273,11 @@ if($user_type == 'client') {
                 <h5>Pending</h5>
                 <h2><?php echo count(array_filter($bookings, function($b) { return $b['status'] == 'pending'; })); ?></h2>
             </div>
+            <div class="stat-card">
+                <i class="fas fa-credit-card"></i>
+                <h5>Paid Bookings</h5>
+                <h2><?php echo count(array_filter($bookings, function($b) { return isset($b['payment_status']) && $b['payment_status'] == 'completed'; })); ?></h2>
+            </div>
         </div>
 
         <div class="dashboard-section">
@@ -278,6 +290,7 @@ if($user_type == 'client') {
                             <th><i class="fas fa-calendar me-1"></i>Dates</th>
                             <th><i class="fas fa-concierge-bell me-1"></i>Service</th>
                             <th><i class="fas fa-dollar-sign me-1"></i>Total Amount</th>
+                            <th><i class="fas fa-credit-card me-1"></i>Payment</th>
                             <th><i class="fas fa-info-circle me-1"></i>Status</th>
                         </tr>
                     </thead>
@@ -294,6 +307,22 @@ if($user_type == 'client') {
                                 <td><?php echo $booking['start_date'] . ' to ' . $booking['end_date']; ?></td>
                                 <td><span class="badge bg-info"><?php echo ucfirst($booking['service_type']); ?></span></td>
                                 <td>$<?php echo $booking['total_amount']; ?></td>
+                                <td>
+                                    <?php if(isset($booking['payment_status'])): ?>
+                                        <span class="badge bg-<?php
+                                            switch($booking['payment_status']) {
+                                                case 'completed': echo 'success'; break;
+                                                case 'pending': echo 'warning'; break;
+                                                case 'failed': echo 'danger'; break;
+                                                default: echo 'secondary';
+                                            }
+                                        ?>"><?php echo ucfirst($booking['payment_status']); ?> (<?php echo ucfirst($booking['payment_method']); ?>)</span>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="openPaymentModal(<?php echo $booking['id']; ?>, '<?php echo $booking['total_amount']; ?>')">
+                                            <i class="fas fa-credit-card me-1"></i>Pay Now
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
                                 <td><span class="badge bg-<?php
                                     switch($booking['status']) {
                                         case 'confirmed': echo 'success'; break;
@@ -444,4 +473,148 @@ if($user_type == 'client') {
         </div>
     <?php endif; ?>
 </div>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-credit-card me-2"></i>Make Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <input type="hidden" id="bookingId" name="booking_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" id="paymentMethod" name="payment_method" required>
+                                    <option value="">Select Payment Method</option>
+                                    <option value="mpesa">M-Pesa</option>
+                                    <option value="bank_atm">Bank ATM</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="card">Credit/Debit Card</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="amount" name="amount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- M-Pesa Fields -->
+                    <div id="mpesaFields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phoneNumber" name="phone_number" placeholder="254XXXXXXXXX">
+                                    <small class="text-muted">Format: 254XXXXXXXXX</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank ATM Fields -->
+                    <div id="bankFields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Account Number</label>
+                                    <input type="text" class="form-control" id="accountNumber" name="account_number" placeholder="Enter account number">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cash Fields -->
+                    <div id="cashFields" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Please contact the car owner directly to arrange cash payment.
+                        </div>
+                    </div>
+
+                    <!-- Card Fields -->
+                    <div id="cardFields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" name="card_number" placeholder="XXXX-XXXX-XXXX-XXXX">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiryDate" name="expiry_date" placeholder="MM/YY">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" name="cvv" placeholder="XXX">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-credit-card me-2"></i>Process Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPaymentModal(bookingId, amount) {
+    document.getElementById('bookingId').value = bookingId;
+    document.getElementById('amount').value = amount;
+    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+}
+
+document.getElementById('paymentMethod').addEventListener('change', function() {
+    const method = this.value;
+    document.getElementById('mpesaFields').style.display = method === 'mpesa' ? 'block' : 'none';
+    document.getElementById('bankFields').style.display = method === 'bank_atm' ? 'block' : 'none';
+    document.getElementById('cashFields').style.display = method === 'cash' ? 'block' : 'none';
+    document.getElementById('cardFields').style.display = method === 'card' ? 'block' : 'none';
+});
+
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch('process_payment.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Payment initiated successfully! ' + (data.message || ''));
+            location.reload();
+        } else {
+            alert('Payment failed: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing payment');
+    });
+});
+</script>
+
 <?php include 'footer.php'; ?>

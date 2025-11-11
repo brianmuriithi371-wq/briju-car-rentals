@@ -15,9 +15,9 @@
 - [x] Implement payment security (input validation, CSRF protection)
 
 ## Pending Tasks
-- [ ] Update client dashboard to show payment status
-- [ ] Update owner dashboard to show payment receipts
-- [ ] Update admin payments page with real payment data
+- [x] Update client dashboard to show payment status
+- [x] Update owner dashboard to show payment receipts
+- [x] Update admin payments page with real payment data
 - [ ] Add payment history and receipts
 - [ ] Test M-Pesa payment flow
 - [ ] Test bank ATM payment flow
