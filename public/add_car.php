@@ -157,7 +157,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="price_per_day" class="form-label">
-                                        <i class="fas fa-dollar-sign text-success me-2"></i>Price per Day ($) *
+                                        <i class="fas fa-dollar-sign text-success me-2"></i>Price per Day (KSH) *
                                     </label>
                                     <input type="number" name="price_per_day" id="price_per_day" class="form-control" min="0" step="0.01" required>
                                 </div>
@@ -185,7 +185,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <label for="latitude" class="form-label">
                                         <i class="fas fa-map-marker-alt text-success me-2"></i>Latitude
                                     </label>
-                                    <input type="number" name="latitude" id="latitude" class="form-control" step="any" placeholder="Optional">
+                                    <input type="number" name="latitude" id="latitude" class="form-control" step="any" placeholder="Auto-filled" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -193,7 +193,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <label for="longitude" class="form-label">
                                         <i class="fas fa-map-marker-alt text-success me-2"></i>Longitude
                                     </label>
-                                    <input type="number" name="longitude" id="longitude" class="form-control" step="any" placeholder="Optional">
+                                    <input type="number" name="longitude" id="longitude" class="form-control" step="any" placeholder="Auto-filled" readonly>
                                 </div>
                             </div>
                         </div>
@@ -202,6 +202,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <button type="button" class="btn btn-outline-primary" onclick="getCurrentLocation()">
                                 <i class="fas fa-crosshairs me-2"></i>Get Current Location
                             </button>
+                            <small class="text-muted ms-2">Location will be automatically captured when you click this button</small>
                         </div>
 
                         <button type="submit" class="btn btn-success btn-lg w-100">
