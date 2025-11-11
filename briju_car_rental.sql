@@ -65,6 +65,20 @@ CREATE TABLE car_locations (
     FOREIGN KEY (car_id) REFERENCES cars(id)
 );
 
+-- Todo list for admins and owners
+CREATE TABLE todos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+    status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
+    due_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 -- Reviews table
 CREATE TABLE reviews (
     id INT PRIMARY KEY AUTO_INCREMENT,

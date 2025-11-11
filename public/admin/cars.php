@@ -233,13 +233,7 @@ include 'header.php';
                         <div class="admin-table-header">
                             <h6><i class="fas fa-map me-2"></i>Live Tracking</h6>
                         </div>
-                        <div style="height: 300px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                            <div class="text-center text-muted">
-                                <i class="fas fa-map-marked-alt fa-3x mb-3"></i>
-                                <p>Interactive map will be integrated here</p>
-                                <small>Real-time car tracking visualization</small>
-                            </div>
-                        </div>
+                        <div id="tracking-map" style="height: 400px; border-radius: 8px;"></div>
                     </div>
                 </div>
             </div>
@@ -262,7 +256,84 @@ include 'header.php';
     </div>
 </div>
 
+<!-- Google Maps API -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_API_KEY; ?>&callback=initTrackingMap"></script>
+
 <script>
+let trackingMap;
+let trackingMarkers = [];
+
+function initTrackingMap() {
+    // Default center
+    const defaultCenter = { lat: -1.2864, lng: 36.8172 }; // Nairobi coordinates
+
+    trackingMap = new google.maps.Map(document.getElementById('tracking-map'), {
+        zoom: 10,
+        center: defaultCenter,
+        styles: [
+            {
+                featureType: 'poi',
+                stylers: [{ visibility: 'off' }]
+            }
+        ]
+    });
+
+    // Add markers for recent car locations
+    <?php foreach($car_locations as $location): ?>
+        addTrackingMarker({
+            lat: <?php echo $location['latitude']; ?>,
+            lng: <?php echo $location['longitude']; ?>,
+            title: '<?php echo addslashes($location['brand'] . ' ' . $location['model']); ?>',
+            license: '<?php echo addslashes($location['license_plate']); ?>',
+            owner: '<?php echo addslashes($location['owner_name']); ?>',
+            time: '<?php echo date('M d, H:i', strtotime($location['timestamp'])); ?>'
+        });
+    <?php endforeach; ?>
+
+    // Fit map to show all markers
+    if (trackingMarkers.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        trackingMarkers.forEach(marker => bounds.extend(marker.getPosition()));
+        trackingMap.fitBounds(bounds);
+
+        // Ensure minimum zoom level
+        google.maps.event.addListenerOnce(trackingMap, 'bounds_changed', function() {
+            if (trackingMap.getZoom() > 15) {
+                trackingMap.setZoom(15);
+            }
+        });
+    }
+}
+
+function addTrackingMarker(carData) {
+    const marker = new google.maps.Marker({
+        position: { lat: carData.lat, lng: carData.lng },
+        map: trackingMap,
+        title: carData.title,
+        icon: {
+            url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+            scaledSize: new google.maps.Size(32, 32)
+        }
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+        content: `
+            <div style="max-width: 200px;">
+                <h6>${carData.title}</h6>
+                <p><strong>License:</strong> ${carData.license}</p>
+                <p><strong>Owner:</strong> ${carData.owner}</p>
+                <p><small><strong>Last Seen:</strong><br>${carData.time}</small></p>
+            </div>
+        `
+    });
+
+    marker.addListener('click', () => {
+        infoWindow.open(trackingMap, marker);
+    });
+
+    trackingMarkers.push(marker);
+}
+
 function viewCar(carId) {
     // Load car details via AJAX
     fetch('get_car_details.php?id=' + carId)
@@ -272,6 +343,19 @@ function viewCar(carId) {
             new bootstrap.Modal(document.getElementById('carModal')).show();
         });
 }
+
+// Handle map loading errors
+window.gm_authFailure = function() {
+    document.getElementById('tracking-map').innerHTML = `
+        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+            <div class="text-center">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h5>Map Loading Failed</h5>
+                <p>Please check your internet connection or contact support.</p>
+            </div>
+        </div>
+    `;
+};
 </script>
 
 <?php include 'footer.php'; ?>

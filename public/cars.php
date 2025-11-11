@@ -19,13 +19,13 @@
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
+            --primary: #001135ff;
+            --primary-dark: #012b19ff;
             --secondary: #64748b;
-            --accent: #f59e0b;
+            --accent: #5a3b07ff;
             --light: #f8fafc;
-            --dark: #1e293b;
-            --success: #10b981;
+            --dark: #030f24ff;
+            --success: #023524ff;
             --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
@@ -36,7 +36,7 @@
 
         body {
             background-color: #f8fafc;
-            color: #334155;
+            color: #091a33ff;
         }
 
         /* Page Header */
@@ -63,7 +63,7 @@
         .filters-section {
             background: white;
             padding: 30px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(8, 22, 100, 0.45);
         }
 
         .filter-form {

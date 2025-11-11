@@ -345,9 +345,14 @@ if($user_type == 'client') {
         <div class="row">
             <div class="col-md-6">
                 <h4><i class="fas fa-car text-primary me-2"></i>My Cars</h4>
-                <a href="add_car.php" class="btn btn-primary mb-3">
-                    <i class="fas fa-plus me-2"></i>Add New Car
-                </a>
+                <div class="mb-3">
+                    <a href="add_car.php" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>Add New Car
+                    </a>
+                    <a href="owner/gps.php" class="btn btn-info">
+                        <i class="fas fa-map-marker-alt me-2"></i>GPS Tracking
+                    </a>
+                </div>
                 <?php if(empty($cars)): ?>
                 <div class="card dashboard-card">
                     <div class="card-body text-center text-muted py-4">
