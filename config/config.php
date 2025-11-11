@@ -8,6 +8,17 @@ define('DB_PASS', '');
 // Google Maps API Key (replace with your actual key)
 define('GMAPS_API_KEY', 'your_google_maps_api_key_here');
 
+// M-Pesa API Configuration (replace with your actual credentials)
+define('MPESA_CONSUMER_KEY', 'your_mpesa_consumer_key_here');
+define('MPESA_CONSUMER_SECRET', 'your_mpesa_consumer_secret_here');
+define('MPESA_SHORTCODE', 'your_mpesa_shortcode_here');
+define('MPESA_PASSKEY', 'your_mpesa_passkey_here');
+define('MPESA_ENVIRONMENT', 'sandbox'); // Change to 'production' for live
+
+// Bank ATM Configuration (for simulation)
+define('BANK_API_ENDPOINT', 'https://api.example-bank.com/payment');
+define('BANK_API_KEY', 'your_bank_api_key_here');
+
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

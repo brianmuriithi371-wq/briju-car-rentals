@@ -79,6 +79,25 @@ CREATE TABLE todos (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Payments table
+CREATE TABLE payments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    transaction_id VARCHAR(100) UNIQUE,
+    payment_method ENUM('mpesa', 'bank_atm', 'cash', 'card') NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'processing', 'completed', 'failed', 'cancelled') DEFAULT 'pending',
+    payment_date TIMESTAMP NULL,
+    mpesa_receipt_number VARCHAR(50),
+    bank_reference VARCHAR(100),
+    phone_number VARCHAR(20),
+    account_number VARCHAR(50),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id)
+);
+
 -- Reviews table
 CREATE TABLE reviews (
     id INT PRIMARY KEY AUTO_INCREMENT,
