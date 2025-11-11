@@ -24,10 +24,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include 'header.php'; ?>
 <style>
-.register-page {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    padding: 2rem 0;
+}
+
+.register-page {
+    flex: 1;
+    background: linear-gradient(135deg, #0b1e74ff 0%, #2e0755ff 100%);
+    display: flex;
+    align-items: center;
+    padding: 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -49,6 +57,27 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     50% { transform: translateY(-15px); }
 }
 
+.image-slider {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.slider-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slider-image.active {
+    opacity: 1;
+}
+
 .register-card {
     background: white;
     border-radius: 20px;
@@ -61,7 +90,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .register-header {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #6e2207ff 0%, #5f3403ff 100%);
     color: white;
     padding: 2.5rem 2rem;
     text-align: center;
@@ -106,7 +135,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .form-control:focus {
-    border-color: #ff6b35;
+    border-color: #571a03ff;
     box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
 }
 
@@ -120,12 +149,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .form-select:focus {
-    border-color: #ff6b35;
+    border-color: #471605ff;
     box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
 }
 
 .btn-register {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #4e1804ff 0%, #5a3307ff 100%);
     border: none;
     border-radius: 10px;
     padding: 1rem;
@@ -165,14 +194,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .register-links a {
-    color: #ff6b35;
+    color: #5f1e06ff;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
 .register-links a:hover {
-    color: #e55a2b;
+    color: #611b04ff;
 }
 
 .alert {
@@ -200,10 +229,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 </style>
 
 <div class="register-page">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10 col-lg-8">
-                <div class="register-card">
+    <div class="container-fluid h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-lg-6 col-md-6 d-none d-md-block h-100">
+                <div class="image-slider">
+                    <img src="../assets/imgs/AMG 1.png" alt="Car 1" class="slider-image active">
+                    <img src="../assets/imgs/benz s 650.jpg" alt="Car 2" class="slider-image">
+                    <img src="../assets/imgs/defender.jpg" alt="Car 3" class="slider-image">
+                    <img src="../assets/imgs/mazda cx5.jpg" alt="Car 4" class="slider-image">
+                    <img src="../assets/imgs/nissan coupe.jpg" alt="Car 5" class="slider-image">
+                    <img src="../assets/imgs/range rover.jpg" alt="Car 6" class="slider-image">
+                    <img src="../assets/imgs/RAV4 LIMITED.jpg" alt="Car 7" class="slider-image">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <div class="register-card mx-auto" style="max-width: 500px;">
                     <div class="register-header">
                         <i class="fas fa-user-plus"></i>
                         <h4>Register for Briju Car Rental</h4>
@@ -281,26 +321,47 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </p>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// Form validation
-(function () {
-    'use strict'
-    var forms = document.querySelectorAll('form')
-    Array.prototype.slice.call(forms).forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-            form.classList.add('was-validated')
-        }, false)
-    })
-})()
+document.addEventListener('DOMContentLoaded', function() {
+    // Image slider
+    let currentImageIndex = 0;
+    const images = document.querySelectorAll('.slider-image');
+
+    console.log('Images found:', images.length);
+
+    function showNextImage() {
+        console.log('Changing image from', currentImageIndex);
+        images[currentImageIndex].classList.remove('active');
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        images[currentImageIndex].classList.add('active');
+        console.log('New active image:', currentImageIndex);
+    }
+
+    if (images.length > 0) {
+        setInterval(showNextImage, 30000); // 30 seconds
+    }
+
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('form')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+});
 </script>
 
 <?php include 'footer.php'; ?>

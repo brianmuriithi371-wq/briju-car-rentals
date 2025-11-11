@@ -24,13 +24,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include 'header.php'; ?>
 <style>
-.login-page {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
+}
+
+.login-page {
+    flex: 1;
+    background: linear-gradient(135deg, #071658ff 0%, #3f0d70ff 100%);
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 2rem 0;
+    padding: 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -52,6 +57,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     50% { transform: translateY(-10px); }
 }
 
+.car-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+}
+
+.car-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
 .login-card {
     background: white;
     border-radius: 20px;
@@ -64,7 +84,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .login-header {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #4b1603ff 0%, #492904ff 100%);
     color: white;
     padding: 2.5rem 2rem;
     text-align: center;
@@ -123,7 +143,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .form-control:focus {
-    border-color: #ff6b35;
+    border-color: #491603ff;
     box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
 }
 
@@ -138,7 +158,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 .btn-login {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #661e04ff 0%, #522d04ff 100%);
     border: none;
     border-radius: 10px;
     padding: 1rem;
@@ -213,10 +233,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 </style>
 
 <div class="login-page">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="login-card">
+    <div class="container-fluid h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-lg-6 col-md-6">
+                <div class="login-card mx-auto" style="max-width: 500px;">
                     <div class="login-header">
                         <i class="fas fa-sign-in-alt"></i>
                         <h4>Welcome Back</h4>
@@ -272,6 +292,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <a href="#" class="text-muted small">Forgot your password?</a>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 d-none d-md-block">
+                <div class="car-section">
+                    <img src="../assets/imgs/AMG 1.png" alt="Car Rental" class="car-image">
+                </div>
             </div>
         </div>
     </div>
